@@ -17,10 +17,10 @@ const styles = StyleSheet.create({
     paddingVertical: 4,
     marginVertical: 4,
     marginHorizontal: 12,
-    backgroundColor: "white",
+    backgroundColor: "#EAEAEA",
   },
   itemText: {
-    color: "brown",
+    color: "#222831",
     textAlign: "center",
   },
 });
