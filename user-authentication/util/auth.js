@@ -9,12 +9,14 @@ async function authenticate(mode, email, password) {
     password,
     returnSecureToken: true,
   });
+
+  return response.data.idToken;
 }
 
-export async function createUser(email, password) {
-  await authenticate("signUp", email, password);
+export function createUser(email, password) {
+  return authenticate("signUp", email, password);
 }
 
-export async function login(email, password) {
-  await authenticate("signInWithPassword", email, password);
+export function login(email, password) {
+  return authenticate("signInWithPassword", email, password);
 }
