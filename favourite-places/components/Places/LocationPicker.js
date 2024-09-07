@@ -1,4 +1,4 @@
-import { Alert, Image, StyleSheet, Text, View } from "react-native";
+import { Alert, StyleSheet, Text, View } from "react-native";
 import OutlinedButton from "../UI/OutlinedButton";
 import { Colors } from "../../constants/colors";
 import {
@@ -7,7 +7,7 @@ import {
   useForegroundPermissions,
 } from "expo-location";
 import { useEffect, useLayoutEffect, useState } from "react";
-import { getMapPreview } from "../../util/location";
+import { getAddress } from "../../util/location";
 import {
   useIsFocused,
   useNavigation,
@@ -15,7 +15,7 @@ import {
 } from "@react-navigation/native";
 import MapView, { Marker } from "react-native-maps";
 
-function LocationPicker() {
+function LocationPicker({ onPickLocation }) {
   const [locationPermissionInformation, requestPermission] =
     useForegroundPermissions();
 
@@ -36,6 +36,19 @@ function LocationPicker() {
       setPickedLocation(mapPickedLocation);
     }
   }, [route, isFocused]);
+
+  useEffect(() => {
+    async function handleLocation() {
+      if (pickedLocation) {
+        const address = await getAddress(
+          pickedLocation.latitude,
+          pickedLocation.longitude
+        );
+        onPickLocation({ ...pickedLocation, address });
+      }
+    }
+    handleLocation();
+  }, [pickedLocation, onPickLocation]);
 
   async function verifyPermissions() {
     if (
@@ -101,7 +114,7 @@ function LocationPicker() {
 
     locationPreview = (
       <MapView
-        style={styles.map} 
+        style={styles.map}
         region={pickedLocation}
         onPress={selectLocationHandler}
       >
