@@ -1,5 +1,3 @@
-import { Alert } from "react-native";
-
 export async function init(database) {
   try {
     await database.execAsync(
@@ -14,7 +12,7 @@ export async function init(database) {
         );`
     );
   } catch (error) {
-    Alert.alert(error);
+    console.log(error);
   }
 }
 
@@ -36,7 +34,7 @@ export async function insertPlace(place, database) {
       place.location.longitude
     );
   } catch (error) {
-    Alert.alert(error);
+    console.log(error);
   }
 }
 
@@ -45,7 +43,7 @@ export async function getAllPlaces(database) {
     const allRows = await database.getAllAsync(`SELECT * FROM places`);
     return allRows;
   } catch (error) {
-    Alert.alert(error);
+    console.log(error);
   }
 }
 
@@ -57,6 +55,14 @@ export async function getPlaceById(database, id) {
     );
     return result[0];
   } catch (error) {
-    Alert.alert(error);
+    console.log(error);
+  }
+}
+
+export async function deletePlaceById(database, id) {
+  try {
+    await database.runAsync(`DELETE FROM places WHERE id = $id`, { $id: id });
+  } catch (error) {
+    console.log(error);
   }
 }

@@ -1,9 +1,10 @@
-import { Image, ScrollView, StyleSheet, Text, View } from "react-native";
+import { Alert, Image, ScrollView, StyleSheet, Text, View } from "react-native";
 import OutlinedButton from "../components/UI/OutlinedButton";
 import { Colors } from "../constants/colors";
 import { useEffect, useState } from "react";
 import { useSQLiteContext } from "expo-sqlite";
-import { getPlaceById } from "../util/database";
+import { deletePlaceById, getPlaceById } from "../util/database";
+import IconButton from "../components/UI/IconButton";
 
 function PlaceDetails({ navigation, route }) {
   const [displayedPlace, setDisplayedPlace] = useState({});
@@ -22,12 +23,28 @@ function PlaceDetails({ navigation, route }) {
     navigation.navigate("Map", { pickedLocation, isEditable: false });
   }
 
+  async function deletePlaceHandler() {
+    await deletePlaceById(databaseCtx, selectedPlaceId);
+    navigation.navigate("AllPlaces");
+    Alert.alert("Success!", "Place has been removed from favourite places");
+  }
+
   useEffect(() => {
     async function getPlace() {
       const place = await getPlaceById(databaseCtx, selectedPlaceId);
       setDisplayedPlace(place);
       navigation.setOptions({
         title: place.title,
+        headerRight: ({ tintColor }) => {
+          return (
+            <IconButton
+              iconName="remove"
+              size={24}
+              color={tintColor}
+              onPress={deletePlaceHandler}
+            />
+          );
+        },
       });
     }
     getPlace();
