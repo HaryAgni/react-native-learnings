@@ -30,8 +30,8 @@ function LocationPicker({ onPickLocation }) {
       const mapPickedLocation = {
         latitude: route.params.pickedLat,
         longitude: route.params.pickedLng,
-        latitudeDelta: 0,
-        longitudeDelta: 0,
+        latitudeDelta: 0.005,
+        longitudeDelta: 0.005,
       };
       setPickedLocation(mapPickedLocation);
     }
@@ -78,13 +78,13 @@ function LocationPicker({ onPickLocation }) {
       ...currentState,
       latitude: location.coords.latitude,
       longitude: location.coords.longitude,
-      latitudeDelta: 0,
-      longitudeDelta: 0,
+      latitudeDelta: 0.005,
+      longitudeDelta: 0.005,
     }));
   }
 
   function getOnMapHandler() {
-    navigation.navigate("Map", { pickedLocation });
+    navigation.navigate("Map", { pickedLocation, isEditable: true });
   }
 
   function selectLocationHandler(event) {
@@ -95,8 +95,8 @@ function LocationPicker({ onPickLocation }) {
       ...currentState,
       latitude,
       longitude,
-      latitudeDelta: 0,
-      longitudeDelta: 0,
+      latitudeDelta: 0.005,
+      longitudeDelta: 0.005,
     }));
   }
 

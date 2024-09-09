@@ -13,15 +13,17 @@ function Map({ navigation }) {
     : {
         latitude: 28.6125461,
         longitude: 77.2293728,
-        latitudeDelta: 0,
-        longitudeDelta: 0,
+        latitudeDelta: 0.005,
+        longitudeDelta: 0.005,
       };
 
   function selectLocationHandler(event) {
-    const lat = event.nativeEvent.coordinate.latitude;
-    const lng = event.nativeEvent.coordinate.longitude;
+    if (route.params.isEditable) {
+      const lat = event.nativeEvent.coordinate.latitude;
+      const lng = event.nativeEvent.coordinate.longitude;
 
-    setSelectedLocation({ lat, lng });
+      setSelectedLocation({ lat, lng });
+    }
   }
 
   const savePickedLocationHandler = useCallback(() => {
@@ -43,16 +45,42 @@ function Map({ navigation }) {
     navigation.setOptions({
       headerRight: ({ tintColor }) => {
         return (
-          <IconButton
-            iconName="save"
-            size={24}
-            color={tintColor}
-            onPress={savePickedLocationHandler}
-          />
+          route.params.isEditable && (
+            <IconButton
+              iconName="save"
+              size={24}
+              color={tintColor}
+              onPress={savePickedLocationHandler}
+            />
+          )
         );
       },
     });
   }, [navigation, savePickedLocationHandler]);
+
+  let marker;
+  if (selectedLocation) {
+    marker = (
+      <Marker
+        title="Picked Location"
+        coordinate={{
+          latitude: selectedLocation.lat,
+          longitude: selectedLocation.lng,
+        }}
+      />
+    );
+  } else if (route.params.pickedLocation) {
+    const markedLocation = route.params.pickedLocation;
+    marker = (
+      <Marker
+        title="Picked Location"
+        coordinate={{
+          latitude: markedLocation.latitude,
+          longitude: markedLocation.longitude,
+        }}
+      />
+    );
+  }
 
   return (
     <MapView
@@ -60,15 +88,7 @@ function Map({ navigation }) {
       initialRegion={region}
       onPress={selectLocationHandler}
     >
-      {selectedLocation && (
-        <Marker
-          title="Picked Location"
-          coordinate={{
-            latitude: selectedLocation.lat,
-            longitude: selectedLocation.lng,
-          }}
-        />
-      )}
+      {marker}
     </MapView>
   );
 }
